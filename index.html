@@ -59,7 +59,8 @@
 </style><style id="portrait-cover-natural-scroll">
 /* Like Math Stars: cover fills viewport WIDTH, never scaled to its HEIGHT. */
 html,body{overflow-x:hidden;overflow-y:auto}
-#landing{display:block!important;min-height:0!important;height:auto!important;overflow:visible!important;padding:0!important;text-align:center!important}
+#landing:not(.hidden){display:block!important;min-height:0!important;height:auto!important;overflow:visible!important;padding:0!important;text-align:center!important}
+#landing.hidden{display:none!important;visibility:hidden!important}
 .science-cover-wrap{display:block!important;position:relative!important;width:100%!important;max-width:1100px!important;height:auto!important;min-width:0!important;margin:0 auto!important;overflow:visible!important;line-height:0}
 .science-cover-image{display:block!important;width:100%!important;height:auto!important;max-height:none!important;object-fit:contain!important;object-position:center!important;border-radius:0!important}
 .science-cover-play{display:block!important;position:absolute!important;top:85.5%!important;height:8.5%!important;right:25%!important;width:50%!important;z-index:3!important;cursor:pointer}
@@ -91,7 +92,7 @@ function correctSound(){[660,880,1047].forEach((f,i)=>tone(f,i*.16,.25,'triangle
 function wrongSound(){tone(370,0,.29,'sawtooth',.20);tone(220,.28,.4,'sawtooth',.23)}
 function stageSound(){[440,587,740,988].forEach((f,i)=>tone(f,i*.2,.31,'triangle',.29))}
 function finalSound(){[523,659,784,1047,1318,1568,1318,1760,2093].forEach((f,i)=>{tone(f,i*.23,i===8?.8:.34,'triangle',.33);tone(f/2,i*.23,.32,'sine',.16)})}
-function show(id){['home','play','complete'].forEach(x=>$(x).classList.toggle('hidden',x!==id));window.scrollTo({top:0,behavior:'smooth'})}
+function show(id){$('landing').classList.add('hidden');['home','play','complete'].forEach(x=>$(x).classList.toggle('hidden',x!==id));window.scrollTo({top:0,behavior:'smooth'})}
 function renderStages(){$('stages').innerHTML=NAMES.map((n,i)=>`<button class="stage ${completed.has(i)?'done':''}" data-stage="${i}"><i>${ICONS[i]}</i>${n}<small>سؤالان ${completed.has(i)?'• ✓ مكتملة':''}</small></button>`).join('');document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>startStage(Number(b.dataset.stage)))}
 function startStage(i){audio();stage=i;qIndex=i*2;score=0;show('play');renderQuestion();tone(740,0,.16)}
 function renderQuestion(){answered=false;let q=QUESTIONS[qIndex];$('counter').textContent=`${NAMES[stage]} • السؤال ${qIndex%2+1} من ٢`;$('progress').style.width=`${qIndex%2*50}%`;$('question').textContent=q.q;const im=$('figure');im.classList.toggle('hidden',!q.img);if(q.img)im.src=q.img;else im.removeAttribute('src');$('answers').innerHTML=q.o.map((x,i)=>`<button class="answer" data-answer="${i}"><b>${['أ','ب','ج','د'][i]})</b> ${x}</button>`).join('');document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>choose(Number(b.dataset.answer)));$('feedback').classList.add('hidden');$('nextBtn').classList.add('hidden')}
